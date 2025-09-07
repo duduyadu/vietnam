@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학업 성취도 종합 보고서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: white;
+        }
+        
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm;
+            margin: 0 auto;
+            background: white;
+            page-break-after: always;
+        }
+        
+        /* 표지 스타일 */
+        .cover-page {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 30mm;
+        }
+        
+        .cover-title {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .cover-subtitle {
+            font-size: 18px;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+        
+        .student-photo-container {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: white;
+            padding: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .student-photo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        
+        .student-info-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .student-name {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .student-id {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .topik-badge {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 20px;
+        }
+        
+        /* 섹션 스타일 */
+        .section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+        
+        /* 차트 스타일 */
+        .chart-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        /* 정보 카드 스타일 */
+        .info-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .info-value {
+            color: #333;
+        }
+        
+        /* 진행 상황 바 */
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        /* 상담 타임라인 */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #ddd;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -29px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #667eea;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #667eea;
+        }
+        
+        .timeline-date {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 5px;
+        }
+        
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .timeline-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        /* 평가 박스 */
+        .evaluation-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .rating-stars {
+            color: #ffc107;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        /* 서명 영역 */
+        .signature-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .signature-box {
+            text-align: center;
+            width: 200px;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #999;
+            margin-bottom: 10px;
+            height: 40px;
+        }
+        
+        .signature-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* 기관 도장 */
+        .stamp-box {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #667eea;
+            margin: 0 auto;
+        }
+        
+        /* 강조 박스 */
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .highlight-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .highlight-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        /* 페이지 푸터 */
+        .page-footer {
+            position: absolute;
+            bottom: 20mm;
+            left: 20mm;
+            right: 20mm;
+            text-align: center;
+            font-size: 10px;
+            color: #999;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* 인쇄 시 페이지 나누기 */
+        @media print {
+            .page {
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 페이지 1: 표지 -->
+    <div class="page cover-page">
+        <div style="text-align: center;">
+            <div style="font-size: 24px; margin-bottom: 10px;">🎓</div>
+            <div style="font-size: 18px; margin-bottom: 30px;">베트남 유학원</div>
+        </div>
+        
+        <div class="cover-title">학업 성취도 종합 보고서</div>
+        <div class="cover-subtitle">Comprehensive Academic Achievement Report</div>
+        
+        <div class="student-photo-container">
+            <div class="student-photo">
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #999;">
+                    학생 사진
+                </div>
+            </div>
+        </div>
+        
+        <div class="student-info-box">
+            <div class="student-name">{{studentName}}</div>
+            <div class="student-id">학생 ID: {{studentCode}}</div>
+            <div style="margin-top: 10px;">
+                <div>작성일: {{reportDate}}</div>
+                <div>평균 출석률: {{attendanceRate}}%</div>
+            </div>
+        </div>
+        
+        <div class="topik-badge">
+            현재 한국어 능력<br>
+            TOPIK {{topikLevel}}급 ({{topikScore}}/300점)
+        </div>
+        
+        <div style="margin-top: 40px; font-size: 12px; opacity: 0.8;">
+            문서번호: DOC-{{documentNumber}} | 유효기간: 발행일로부터 3개월
+        </div>
+    </div>
+    
+    <!-- 페이지 2: 학업성취도 및 특별활동 -->
+    <div class="page">
+        <div class="section">
+            <div class="section-title">학업성취도 및 특별활동</div>
+            
+            <div class="subsection-title">📊 TOPIK 성적 추이</div>
+            <div class="chart-container">
+                <canvas id="topikChart" width="400" height="200"></canvas>
+            </div>
+            
+            <div class="subsection-title">📊 학업 성취도 현황</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">📅 출석률</span>
+                        <span class="info-value">{{attendanceRate}}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{attendanceRate}}%;">{{attendanceRate}}%</div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">✋ 수업 참여도</span>
+                        <span class="info-value">{{participationGrade}}</span>
+                    </div>
+                    <div class="rating-stars">⭐⭐⭐⭐⭐</div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">📖 단어 학습</span>
+                        <span class="info-value">{{vocabularyCount}}/5000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{vocabularyProgress}}%;">{{vocabularyProgress}}%</div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-row">
+                        <span class="info-label">🏆 예상 TOPIK</span>
+                        <span class="info-value">{{expectedTopik}}급</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="subsection-title">💡 학습분석</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <div class="info-card" style="background: #e8f5e9;">
+                    <div style="font-weight: 600; margin-bottom: 10px; color: #4caf50;">💪 강점 영역</div>
+                    <ul style="list-style: none; padding: 0;">
+                        {{#each strengths}}
+                        <li>✓ {{this}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+                
+                <div class="info-card" style="background: #fff3e0;">
+                    <div style="font-weight: 600; margin-bottom: 10px; color: #ff9800;">📝 보완 필요 영역</div>
+                    <ul style="list-style: none; padding: 0;">
+                        {{#each weaknesses}}
+                        <li>! {{this}}</li>
+                        {{/each}}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="subsection-title">🏆 특별활동 및 포트폴리오</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <div class="info-card">
+                    <div style="font-weight: 600; margin-bottom: 10px;">🎭 동아리 활동</div>
+                    <div>{{clubActivities}}</div>
+                </div>
+                
+                <div class="info-card">
+                    <div style="font-weight: 600; margin-bottom: 10px;">🤝 봉사 활동</div>
+                    <div>{{volunteerWork}}</div>
+                </div>
+                
+                <div class="info-card">
+                    <div style="font-weight: 600; margin-bottom: 10px;">🏅 수상 경력</div>
+                    <div>{{awards}}</div>
+                </div>
+                
+                <div class="info-card">
+                    <div style="font-weight: 600; margin-bottom: 10px;">📁 포트폴리오</div>
+                    <div>{{portfolio}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 페이지 3: 진학목표 및 상담이력 -->
+    <div class="page">
+        <div class="section">
+            <div class="section-title">진학목표 및 상담이력</div>
+            
+            <div class="subsection-title">🎯 희망대학 및 전공</div>
+            <div class="timeline">
+                {{#each universityGoals}}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{this.date}}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">{{this.university}}</div>
+                        <div>{{this.major}}</div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            <div class="subsection-title">💬 주요 상담이력</div>
+            <div class="timeline">
+                {{#each consultations}}
+                <div class="timeline-item">
+                    <div class="timeline-date">{{this.date}}</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">{{this.type}} - {{this.counselor}}</div>
+                        <div>{{this.summary}}</div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            
+            <div class="subsection-title">📈 특별활동 및 포트폴리오</div>
+            <div class="info-card">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 10px;">🎭 동아리 활동</div>
+                        <div>{{clubActivities}}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 10px;">🤝 봉사 활동</div>
+                        <div>{{volunteerWork}}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 10px;">🏅 수상 경력</div>
+                        <div>{{awards}}</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 10px;">📁 포트폴리오</div>
+                        <div>{{portfolio}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 페이지 4: 종합 평가 및 추천 -->
+    <div class="page">
+        <div class="section">
+            <div class="section-title">종합 평가 및 추천</div>
+            
+            <div class="subsection-title">✍️ 학생의견 및 포부</div>
+            <div class="info-card" style="background: #e3f2fd;">
+                <p style="font-style: italic; line-height: 1.8;">
+                    "{{studentStatement}}"
+                </p>
+            </div>
+            
+            <div class="subsection-title">👥 생활 및 인성평가</div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+                <div class="evaluation-box">
+                    <div style="font-weight: 600;">교우 관계</div>
+                    <div class="rating-stars">{{peerRelationshipStars}}</div>
+                    <div>{{peerRelationshipComment}}</div>
+                </div>
+                
+                <div class="evaluation-box">
+                    <div style="font-weight: 600;">수업 태도</div>
+                    <div class="rating-stars">{{classAttitudeStars}}</div>
+                    <div>{{classAttitudeComment}}</div>
+                </div>
+                
+                <div class="evaluation-box">
+                    <div style="font-weight: 600;">한국 생활 적응도</div>
+                    <div class="rating-stars">{{koreanAdaptationStars}}</div>
+                    <div>{{koreanAdaptationComment}}</div>
+                </div>
+                
+                <div class="evaluation-box">
+                    <div style="font-weight: 600;">성장 가능성</div>
+                    <div class="rating-stars">{{growthPotentialStars}}</div>
+                    <div>{{growthPotentialComment}}</div>
+                </div>
+            </div>
+            
+            <div class="subsection-title">💬 상담사 종합 평가</div>
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">담당 상담사:</span>
+                    <span class="info-value">{{counselorName}}</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">총 상담 횟수:</span>
+                    <span class="info-value">{{totalConsultations}}회</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">최근 상담일:</span>
+                    <span class="info-value">{{lastConsultationDate}}</span>
+                </div>
+                
+                <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                    <div style="font-weight: 600; margin-bottom: 10px;">🎯 개선 필요사항</div>
+                    <p>{{improvementNeeded}}</p>
+                </div>
+                
+                <div style="margin-top: 15px; padding: 15px; background: #f0f0f0; border-radius: 8px;">
+                    <div style="font-weight: 600; margin-bottom: 10px;">🚀 향후 목표</div>
+                    <p>{{futureGoals}}</p>
+                </div>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 30px;">
+                <div class="highlight-title">✨ 상담사 종합 의견</div>
+                <p style="font-size: 14px; line-height: 1.8; margin-top: 15px;">
+                    {{overallEvaluation}}
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 페이지 5: 교육기관 종합 평가 -->
+    <div class="page">
+        <div class="section">
+            <div class="section-title">📋 교육기관 종합 평가</div>
+            
+            <div class="subsection-title">📚 학업 성취도 평가</div>
+            <div class="info-card">
+                <p style="line-height: 1.8;">{{academicAchievementEvaluation}}</p>
+            </div>
+            
+            <div class="subsection-title">🗣 한국어 능력 평가</div>
+            <div class="info-card">
+                <p style="line-height: 1.8;">{{koreanLanguageEvaluation}}</p>
+            </div>
+            
+            <div class="highlight-box" style="margin-top: 30px;">
+                <div style="font-size: 20px; margin-bottom: 10px;">✅</div>
+                <div class="highlight-title">목표 대학 진학에 적합한 학생으로 추천합니다.</div>
+            </div>
+            
+            <div class="signature-section">
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">학생 서명</div>
+                </div>
+                
+                <div class="signature-box">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">상담사: {{counselorName}}</div>
+                </div>
+                
+                <div class="signature-box">
+                    <div class="stamp-box">
+                        <div>
+                            기관<br>
+                            직인
+                        </div>
+                    </div>
+                    <div class="signature-label" style="margin-top: 10px;">베트남 유학원</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="page-footer">
+            문서번호: DOC-{{documentNumber}} | 발행일: {{reportDate}} | 유효기간: 발행일로부터 3개월
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // TOPIK 성적 추이 차트 생성
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('topikChart');
+            if (ctx) {
+                new Chart(ctx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: {{topikExamDates}},
+                        datasets: [{
+                            label: 'TOPIK 점수',
+                            data: {{topikScores}},
+                            borderColor: '#667eea',
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 0,
+                                max: 300
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

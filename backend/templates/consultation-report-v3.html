@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>학업 성취도 종합 보고서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap');
+        
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+        
+        body {
+            font-family: 'Noto Sans KR', -apple-system, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.6;
+            background: white;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Page Setup for A4 */
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+            page-break-after: always;
+            page-break-inside: avoid;
+            overflow: hidden;
+        }
+        
+        .page:last-child {
+            page-break-after: auto;
+        }
+        
+        /* Print Specific Settings */
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                margin: 0;
+                padding: 0;
+                background: white;
+            }
+            
+            .page {
+                margin: 0;
+                border: none;
+                box-shadow: none;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+            
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Force background colors to print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+        
+        /* Screen View */
+        @media screen {
+            body {
+                background: #e9ecef;
+                padding: 20px 0;
+            }
+            
+            .page {
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }
+        }
+        
+        /* Page 1 - Cover with Print-safe Background */
+        .page-cover {
+            background: #667eea !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            display: flex;
+            flex-direction: column;
+            padding: 40mm 25mm;
+        }
+        
+        .cover-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+        
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.2) !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+        }
+        
+        .institution-info {
+            text-align: right;
+            color: white;
+        }
+        
+        .institution-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .report-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .main-title {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+        
+        .title-ko {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+        
+        .title-en {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+        
+        .student-photo {
+            width: 120px;
+            height: 150px;
+            background: white !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 10px;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #adb5bd;
+            font-size: 14px;
+        }
+        
+        .student-info-box {
+            background: rgba(255,255,255,0.95) !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: auto;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            color: #2c3e50;
+        }
+        
+        .info-label {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .info-value-sub {
+            font-size: 13px;
+            color: #495057;
+            font-weight: 400;
+        }
+        
+        .topik-highlight {
+            background: #667eea !important;
+            -webkit-print-color-adjust: exact;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .topik-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+        
+        .topik-score {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        
+        .doc-footer {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            padding: 0 25mm;
+        }
+        
+        /* Content Pages */
+        .page-content {
+            padding: 25mm 20mm;
+            height: 297mm;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .content-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .page-indicator {
+            background: #667eea !important;
+            -webkit-print-color-adjust: exact;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 25px;
+        }
+        
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .section-icon {
+            width: 30px;
+            height: 30px;
+            background: #667eea !important;
+            -webkit-print-color-adjust: exact;
+            color: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .data-table thead {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .data-table th {
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .data-table td {
+            padding: 10px;
+            font-size: 13px;
+            color: #2c3e50;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            background: #e3f2fd !important;
+            color: #1976d2 !important;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        /* Progress Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .stat-unit {
+            font-size: 13px;
+            color: #868e96;
+            font-weight: 400;
+        }
+        
+        /* Analysis Boxes */
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .analysis-box {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .analysis-box.positive {
+            border-color: #4caf50;
+            background: #f1f8e9 !important;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .analysis-box.negative {
+            border-color: #ff9800;
+            background: #fff3e0 !important;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .analysis-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .analysis-list {
+            list-style: none;
+            font-size: 12px;
+            color: #495057;
+        }
+        
+        .analysis-list li {
+            padding: 3px 0;
+            padding-left: 15px;
+            position: relative;
+        }
+        
+        .analysis-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        
+        .negative .analysis-list li:before {
+            content: '!';
+            color: #ff9800;
+        }
+        
+        /* Timeline */
+        .timeline-box {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-item {
+            padding: 10px 0;
+            border-left: 3px solid #667eea;
+            padding-left: 20px;
+            margin-left: 10px;
+            position: relative;
+        }
+        
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 15px;
+            width: 11px;
+            height: 11px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+        }
+        
+        .timeline-date {
+            font-size: 11px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 5px 0;
+        }
+        
+        .timeline-desc {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        /* Activities */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .activity-card {
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .activity-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .activity-content {
+            flex: 1;
+        }
+        
+        .activity-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 3px;
+        }
+        
+        .activity-desc {
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+        
+        /* Opinion Box */
+        .opinion-box {
+            background: #e3f2fd !important;
+            -webkit-print-color-adjust: exact;
+            border-left: 4px solid #1976d2;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .opinion-text {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #1565c0;
+            font-style: italic;
+        }
+        
+        /* Evaluation */
+        .eval-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .eval-item {
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .eval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .eval-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .eval-rating {
+            color: #ffd700;
+            font-size: 14px;
+        }
+        
+        .eval-desc {
+            font-size: 12px;
+            color: #495057;
+            line-height: 1.5;
+        }
+        
+        /* Final Recommendation */
+        .recommendation-box {
+            background: #4caf50 !important;
+            -webkit-print-color-adjust: exact;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .recommendation-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        /* Signatures */
+        .signature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-top: auto;
+            padding-top: 30px;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .signature-item {
+            text-align: center;
+        }
+        
+        .signature-line {
+            border-bottom: 1px solid #495057;
+            height: 50px;
+            margin-bottom: 5px;
+        }
+        
+        .signature-label {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .seal-box {
+            width: 70px;
+            height: 70px;
+            border: 2px solid #667eea;
+            border-radius: 50%;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        /* Footer */
+        .page-footer {
+            margin-top: auto;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            font-size: 11px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Cover -->
+    <div class="page page-cover">
+        <div class="cover-header">
+            <div class="logo-box">🎓</div>
+            <div class="institution-info">
+                <div class="institution-name">{{agency_name}}</div>
+                <div class="report-label">공식 성적 증명서</div>
+            </div>
+        </div>
+        
+        <div class="main-title">
+            <div class="title-ko">학업 성취도 종합 보고서</div>
+            <div class="title-en">Comprehensive Academic Achievement Report</div>
+            
+            <div class="student-photo">학생 사진</div>
+        </div>
+        
+        <div class="student-info-box">
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">학생 이름</div>
+                    <div class="info-value">{{student_name_ko}}</div>
+                    <div class="info-value-sub">{{student_name_vi}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">학생 ID</div>
+                    <div class="info-value">{{student_code}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">작성일</div>
+                    <div class="info-value">{{report_date}}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">평균 출석률</div>
+                    <div class="info-value">{{attendance_rate}}%</div>
+                </div>
+            </div>
+            
+            <div class="topik-highlight">
+                <div class="topik-label">현재 한국어 능력</div>
+                <div class="topik-score">TOPIK {{topik_level}}급 ({{topik_total}}/200점)</div>
+            </div>
+        </div>
+        
+        <div class="doc-footer">
+            문서번호: {{document_number}} | 유효기간: 발행일로부터 3개월
+        </div>
+    </div>
+    
+    <!-- Page 2: Academic Achievement -->
+    <div class="page page-content">
+        <div class="content-header">
+            <div class="content-title">상세 학업 성취도</div>
+            <div class="page-indicator">2/4</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">📊</div>
+                <span>TOPIK 모의고사 성적 추이</span>
+            </div>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>회차</th>
+                        <th>응시일</th>
+                        <th>읽기</th>
+                        <th>듣기</th>
+                        <th>총점</th>
+                        <th>등급</th>
+                        <th>성장률</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{topik_score_table}}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">📚</div>
+                <span>학습 진도 현황</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-label">출석률</div>
+                    <div class="stat-value">{{attendance_rate}}<span class="stat-unit">%</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">✋</div>
+                    <div class="stat-label">수업 참여도</div>
+                    <div class="stat-value">{{participation_grade}}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📖</div>
+                    <div class="stat-label">단어 학습</div>
+                    <div class="stat-value">{{vocabulary_known}}<span class="stat-unit">/1000</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">💡</div>
+                <span>학습 분석</span>
+            </div>
+            
+            <div class="analysis-grid">
+                <div class="analysis-box positive">
+                    <div class="analysis-title">💪 강점 영역</div>
+                    <ul class="analysis-list">
+                        {{strength_list}}
+                    </ul>
+                </div>
+                <div class="analysis-box negative">
+                    <div class="analysis-title">📝 보완 필요 영역</div>
+                    <ul class="analysis-list">
+                        {{weakness_list}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 3: Goals and Consultation -->
+    <div class="page page-content">
+        <div class="content-header">
+            <div class="content-title">진학 목표 및 상담 이력</div>
+            <div class="page-indicator">3/4</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">🎯</div>
+                <span>희망 대학 및 전공</span>
+            </div>
+            
+            <div class="timeline-box">
+                {{university_goals_timeline}}
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">💬</div>
+                <span>주요 상담 이력</span>
+            </div>
+            
+            <div class="timeline-box">
+                {{consultation_timeline}}
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">🏆</div>
+                <span>특별 활동 및 포트폴리오</span>
+            </div>
+            
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <div class="activity-icon">🎭</div>
+                    <div class="activity-content">
+                        <div class="activity-title">동아리 활동</div>
+                        <div class="activity-desc">{{club_activities}}</div>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-icon">🤝</div>
+                    <div class="activity-content">
+                        <div class="activity-title">봉사 활동</div>
+                        <div class="activity-desc">{{volunteer_activities}}</div>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-icon">🏅</div>
+                    <div class="activity-content">
+                        <div class="activity-title">수상 경력</div>
+                        <div class="activity-desc">{{awards}}</div>
+                    </div>
+                </div>
+                <div class="activity-card">
+                    <div class="activity-icon">📁</div>
+                    <div class="activity-content">
+                        <div class="activity-title">포트폴리오</div>
+                        <div class="activity-desc">{{portfolio_status}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">✍️</div>
+                <span>학생 의견 및 포부</span>
+            </div>
+            
+            <div class="opinion-box">
+                <div class="opinion-text">
+                    "{{student_opinion}}"
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page 4: Comprehensive Evaluation -->
+    <div class="page page-content">
+        <div class="content-header">
+            <div class="content-title">종합 평가 및 추천</div>
+            <div class="page-indicator">4/4</div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">👥</div>
+                <span>생활 및 인성 평가</span>
+            </div>
+            
+            <div class="eval-grid">
+                <div class="eval-item">
+                    <div class="eval-header">
+                        <div class="eval-title">교우 관계</div>
+                        <div class="eval-rating">{{social_rating_stars}}</div>
+                    </div>
+                    <div class="eval-desc">
+                        {{social_relationship}}
+                    </div>
+                </div>
+                <div class="eval-item">
+                    <div class="eval-header">
+                        <div class="eval-title">수업 태도</div>
+                        <div class="eval-rating">{{attitude_rating_stars}}</div>
+                    </div>
+                    <div class="eval-desc">
+                        {{class_attitude}}
+                    </div>
+                </div>
+                <div class="eval-item">
+                    <div class="eval-header">
+                        <div class="eval-title">한국 생활 적응도</div>
+                        <div class="eval-rating">{{adaptation_rating_stars}}</div>
+                    </div>
+                    <div class="eval-desc">
+                        {{adaptation_level}}
+                    </div>
+                </div>
+                <div class="eval-item">
+                    <div class="eval-header">
+                        <div class="eval-title">성장 가능성</div>
+                        <div class="eval-rating">{{growth_rating_stars}}</div>
+                    </div>
+                    <div class="eval-desc">
+                        {{growth_potential}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">📋</div>
+                <span>교육기관 종합 평가</span>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 15px;">
+                <h4 style="font-size: 14px; color: #667eea; margin-bottom: 10px;">📚 학업 성취도 평가</h4>
+                <p style="font-size: 13px; color: #495057; line-height: 1.7;">
+                    {{academic_evaluation}}
+                </p>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
+                <h4 style="font-size: 14px; color: #667eea; margin-bottom: 10px;">🗣️ 한국어 능력 평가</h4>
+                <p style="font-size: 13px; color: #495057; line-height: 1.7;">
+                    {{korean_evaluation}}
+                </p>
+            </div>
+        </div>
+        
+        <div class="recommendation-box">
+            <div class="recommendation-text">
+                ✅ {{final_recommendation}}
+            </div>
+        </div>
+        
+        <div class="signature-grid">
+            <div class="signature-item">
+                <div class="signature-line"></div>
+                <div class="signature-label">학생 서명</div>
+            </div>
+            <div class="signature-item">
+                <div class="signature-line"></div>
+                <div class="signature-label">상담사: {{counselor_name}}</div>
+            </div>
+            <div class="signature-item">
+                <div class="seal-box">기관<br>직인</div>
+                <div class="signature-label">{{agency_name}}</div>
+            </div>
+        </div>
+        
+        <div class="page-footer">
+            문서번호: {{document_number}} | 발행일: {{report_date}} | 유효기간: 발행일로부터 3개월
+        </div>
+    </div>
+</body>
+</html>

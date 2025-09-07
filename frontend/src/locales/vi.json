@@ -1,0 +1,79 @@
+{
+  "common": {
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "edit": "Sửa",
+    "delete": "Xóa",
+    "search": "Tìm kiếm",
+    "add": "Thêm",
+    "close": "Đóng",
+    "confirm": "Xác nhận",
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "username": "Tên đăng nhập",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "loginSuccess": "Đăng nhập thành công",
+    "loginFailed": "Đăng nhập thất bại",
+    "invalidCredentials": "Tên đăng nhập hoặc mật khẩu không chính xác"
+  },
+  "menu": {
+    "dashboard": "Bảng điều khiển",
+    "students": "Quản lý sinh viên",
+    "consultations": "Hồ sơ tư vấn",
+    "reports": "Báo cáo",
+    "users": "Quản lý người dùng",
+    "settings": "Cài đặt"
+  },
+  "student": {
+    "title": "Quản lý sinh viên",
+    "addStudent": "Thêm sinh viên",
+    "studentList": "Danh sách sinh viên",
+    "studentDetail": "Chi tiết sinh viên",
+    "studentCode": "ID sinh viên",
+    "name": "Họ và tên",
+    "birthDate": "Ngày sinh",
+    "phone": "Số điện thoại",
+    "email": "Email",
+    "status": "Trạng thái",
+    "statusOptions": {
+      "studying": "Đang học",
+      "graduated": "Đã tốt nghiệp",
+      "withdrawn": "Thôi học",
+      "archived": "Lưu trữ",
+      "deleted": "Đã xóa"
+    },
+    "basicInfo": "Thông tin cơ bản",
+    "familyInfo": "Thông tin gia đình",
+    "academicInfo": "Thông tin học tập",
+    "visaInfo": "Thông tin visa",
+    "parentName": "Tên phụ huynh",
+    "parentPhone": "Số điện thoại phụ huynh",
+    "parentIncome": "Thu nhập gia đình",
+    "highSchool": "Trường trung học",
+    "gpa": "Điểm trung bình",
+    "desiredMajor": "Ngành học mong muốn",
+    "desiredUniversity": "Trường đại học mong muốn",
+    "visaType": "Loại visa",
+    "visaExpiry": "Ngày hết hạn visa"
+  },
+  "consultation": {
+    "title": "Hồ sơ tư vấn",
+    "addConsultation": "Thêm tư vấn",
+    "consultationDate": "Ngày tư vấn",
+    "consultationType": "Loại tư vấn",
+    "content": "Nội dung tư vấn",
+    "nextDate": "Ngày tư vấn tiếp theo",
+    "types": {
+      "academic": "Học tập",
+      "career": "Nghề nghiệp",
+      "personal": "Cá nhân",
+      "visa": "Visa",
+      "other": "Khác"
+    }
+  }
+}

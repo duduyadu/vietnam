@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+*.env
+
+# Build outputs
+build/
+dist/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Database files
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.db
+
+# Temporary files
+tmp/
+temp/
+uploads/
+*.tmp
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Test and sample files
+test-*.pdf
+test-*.html
+test-*.js
+sample*.pdf
+sample*.txt
+*.pdf
+*.xlsx
+*.xls
+보고서샘플.pdf
+테스트학생*.pdf
+샘플*.xlsx
+
+# Batch files (Windows specific)
+*.bat
+
+# SQL files (keep only necessary ones)
+FIXED_ERRORS.md
+IMPLEMENTATION_SUMMARY.md
+FEATURE_GUIDE.md
+TEST_GUIDE.md
+test-fixes.md
+SYSTEM_GUIDE.md
+
+# Keep important SQL files
+!CREATE_TABLES_NEW_PROJECT.sql
+!SUPABASE_SETUP.sql
+
+# Package lock files - keep for consistency
+# package-lock.json
+# yarn.lock

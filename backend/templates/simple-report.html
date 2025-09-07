@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>베트남 유학생 상담 보고서</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+            background: white;
+            padding: 40px;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* 헤더 */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .main-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 10px;
+        }
+        
+        .sub-title {
+            font-size: 18px;
+            color: #666;
+        }
+        
+        /* 학생 정보 섹션 */
+        .student-info {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .info-item {
+            flex: 1;
+            min-width: 250px;
+            margin-right: 20px;
+        }
+        
+        .info-item:last-child {
+            margin-right: 0;
+        }
+        
+        .info-label {
+            font-weight: bold;
+            color: #333;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .info-value {
+            color: #666;
+        }
+        
+        /* 학습 성과 요약 */
+        .summary-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border: 2px solid #f0f0f0;
+            border-radius: 10px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #FF6B35;
+            margin-bottom: 30px;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        
+        .stat-box {
+            text-align: center;
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .stat-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #FF6B35;
+        }
+        
+        .stat-unit {
+            font-size: 24px;
+            color: #666;
+        }
+        
+        /* 푸터 */
+        .footer {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        
+        .footer-date {
+            margin-bottom: 5px;
+        }
+        
+        /* 인쇄 시 스타일 */
+        @media print {
+            body {
+                padding: 20px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .summary-section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <div class="header">
+            <h1 class="main-title">베트남 유학생 상담 보고서</h1>
+            <p class="sub-title">Vietnamese Student Consultation Report</p>
+        </div>
+        
+        <!-- 학생 정보 -->
+        <div class="student-info">
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-label">이름:</span>
+                    <span class="info-value">{{student_name_ko}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">학생 코드:</span>
+                    <span class="info-value">{{student_code}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">유학원:</span>
+                    <span class="info-value">{{agency_name}}</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-item">
+                    <span class="info-label">연락처:</span>
+                    <span class="info-value">{{phone_number}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">이메일:</span>
+                    <span class="info-value">{{email}}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">보고서 생성일:</span>
+                    <span class="info-value">{{report_date}}</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 학습 성과 요약 -->
+        <div class="summary-section">
+            <h2 class="section-title">학습 성과 요약</h2>
+            
+            <div class="stats-container">
+                <div class="stat-box">
+                    <div class="stat-label">학습 진도</div>
+                    <div class="stat-value">
+                        {{learning_progress}}<span class="stat-unit">%</span>
+                    </div>
+                </div>
+                
+                <div class="stat-box">
+                    <div class="stat-label">상담 횟수</div>
+                    <div class="stat-value">
+                        {{consultation_count}}<span class="stat-unit">회</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 푸터 -->
+        <div class="footer">
+            <div class="footer-date">이 보고서는 {{report_date}}에 생성되었습니다.</div>
+            <div>© 베트남 유학생 통합 관리 시스템</div>
+        </div>
+    </div>
+</body>
+</html>

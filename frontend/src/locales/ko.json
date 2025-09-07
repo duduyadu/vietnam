@@ -1,0 +1,79 @@
+{
+  "common": {
+    "save": "저장",
+    "cancel": "취소",
+    "edit": "수정",
+    "delete": "삭제",
+    "search": "검색",
+    "add": "추가",
+    "close": "닫기",
+    "confirm": "확인",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다"
+  },
+  "auth": {
+    "login": "로그인",
+    "logout": "로그아웃",
+    "username": "아이디",
+    "email": "이메일",
+    "password": "비밀번호",
+    "loginSuccess": "로그인 성공",
+    "loginFailed": "로그인 실패",
+    "invalidCredentials": "아이디 또는 비밀번호가 올바르지 않습니다"
+  },
+  "menu": {
+    "dashboard": "대시보드",
+    "students": "학생 관리",
+    "consultations": "상담 기록",
+    "reports": "보고서",
+    "users": "사용자 관리",
+    "settings": "설정"
+  },
+  "student": {
+    "title": "학생 관리",
+    "addStudent": "학생 추가",
+    "studentList": "학생 목록",
+    "studentDetail": "학생 상세 정보",
+    "studentCode": "학생 ID",
+    "name": "이름",
+    "birthDate": "생년월일",
+    "phone": "연락처",
+    "email": "이메일",
+    "status": "상태",
+    "statusOptions": {
+      "studying": "재학 중",
+      "graduated": "졸업",
+      "withdrawn": "자퇴",
+      "archived": "보관",
+      "deleted": "삭제됨"
+    },
+    "basicInfo": "기본 정보",
+    "familyInfo": "가족 정보",
+    "academicInfo": "학업 정보",
+    "visaInfo": "비자 정보",
+    "parentName": "부모님 성함",
+    "parentPhone": "부모님 연락처",
+    "parentIncome": "가족 연소득",
+    "highSchool": "출신 고등학교",
+    "gpa": "고등학교 성적",
+    "desiredMajor": "희망 전공",
+    "desiredUniversity": "희망 대학",
+    "visaType": "비자 종류",
+    "visaExpiry": "비자 만료일"
+  },
+  "consultation": {
+    "title": "상담 기록",
+    "addConsultation": "상담 추가",
+    "consultationDate": "상담 날짜",
+    "consultationType": "상담 유형",
+    "content": "상담 내용",
+    "nextDate": "다음 상담일",
+    "types": {
+      "academic": "학업",
+      "career": "진로",
+      "personal": "개인",
+      "visa": "비자",
+      "other": "기타"
+    }
+  }
+}
