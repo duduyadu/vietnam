@@ -53,8 +53,10 @@ sample*.txt
 테스트학생*.pdf
 샘플*.xlsx
 
-# Batch files (Windows specific)
+# Batch files (Windows specific) - except setup scripts
 *.bat
+!install-all.bat
+!start-all.bat
 
 # SQL files (keep only necessary ones)
 FIXED_ERRORS.md
