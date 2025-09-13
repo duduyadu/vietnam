@@ -582,12 +582,16 @@ UPDATE users SET username = SPLIT_PART(email, '@', 1) WHERE username IS NULL;
   - ✅ 로그인 시스템을 이메일에서 username(ID) 기반으로 전환
   - ✅ PDF 보고서 템플릿을 전문적인 5페이지 형식으로 개편
   - ✅ 참고 프론트엔드 구조 분석 및 적용
-- 2025-09-13: 프로젝트 상태 점검 및 포트 확인
+- 2025-09-13: 프로젝트 상태 점검 및 서버 실행
   - ✅ 프로젝트 구조 파악 완료
-  - ✅ Backend 포트: 5001 (server.js 설정)
+  - ✅ Backend 포트: 5000 (실제 실행 포트, server.js: const PORT = process.env.PORT || 5001)
   - ✅ Frontend 포트: 3000 (React 기본 설정)
-  - ✅ 현재 서버 미실행 상태 확인
   - ✅ Git 상태: 클린 (main branch, 최신 상태)
+  - ✅ 서버 실행 및 테스트 완료
+    - Backend: http://localhost:5000 (정상 작동 확인)
+    - Frontend: http://localhost:3000 (컴파일 및 실행 중)
+    - Supabase PostgreSQL 연결 성공
+  - ✅ PROJECT_HISTORY.md 업데이트 및 GitHub 푸쉬 완료
 
 ---
 
