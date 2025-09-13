@@ -642,7 +642,7 @@ UPDATE users SET username = SPLIT_PART(email, '@', 1) WHERE username IS NULL;
 ### 상담 시스템 대규모 개편
 - PDF 보고서 개선
   - 예상 TOPIK 블록 제거 (학업 성취도 섹션)
-  - 주요 상담 이력 섹션 제거
+  - 주요 상담 이력 섹션 복구 (사용자 요청에 따라)
   - 필드명 일치 문제 해결 ("학생의견 및 포부" → "학생 의견")
   - "최종 추천사항" → "상담사 종합 의견"으로 변경
 - 상담 UI 기능 강화
@@ -651,6 +651,12 @@ UPDATE users SET username = SPLIT_PART(email, '@', 1) WHERE username IS NULL;
   - 비자 준비 탭 제거
   - 탭 구조 재편성 (8개 → 8개, 희망 대학 탭 추가)
 - 데이터 필드 매핑 수정
-  - counselor_comprehensive_opinion 필드 추가
-  - university_preferences 배열 필드 추가
-  - counselor_name 필드 추가
+  - counselor_comprehensive_opinion 필드 추가 및 PDF 매핑 완료
+  - university_preferences 배열 필드 추가 및 처리 로직 구현
+  - counselor_name 필드 추가 및 PDF 동적 표시
+- PDF 템플릿 디자인 전면 개선
+  - 모던 미니멀리즘 디자인 적용
+  - 색상 스킴 업데이트 (보라색 그라데이션 #4F46E5 → #7C3AED)
+  - 시각적 계층 구조 개선 (섹션 헤더, 아이콘, 간격)
+  - 그림자 효과 및 호버 애니메이션 추가
+  - 전문적인 타이포그래피 및 레이아웃 최적화
