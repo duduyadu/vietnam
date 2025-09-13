@@ -335,17 +335,24 @@ const Students: React.FC = () => {
   const handleAddStudent = async (studentData: any) => {
     try {
       console.log('Adding student:', studentData);
-      
-      // API 호출하여 학생 추가
-      const response = await studentsAPI.create(studentData);
+
+      // FormData 처리를 위한 API 호출
+      let response;
+      if (studentData instanceof FormData) {
+        // FormData인 경우 multipart/form-data로 전송
+        response = await studentsAPI.createWithFile(studentData);
+      } else {
+        // 일반 JSON 데이터
+        response = await studentsAPI.create(studentData);
+      }
       console.log('Student created:', response.data);
-      
+
       alert('학생이 성공적으로 추가되었습니다!');
       setIsAddModalOpen(false);
-      
-      // 관리자와 교사는 목록 새로고침
+
+      // 관리자와 교사는 목록 새로고침 - await 추가
       if (user?.role !== 'korean_branch') {
-        loadStudents();
+        await loadStudents();
       }
       
       // Promise가 성공적으로 완료됨을 명시적으로 반환

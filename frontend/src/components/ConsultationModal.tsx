@@ -63,7 +63,6 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
   const initialFormData = {
     student_id: studentId || '',
     consultation_date: new Date().toISOString().split('T')[0],
-    consultation_type: '',
     evaluation_category: 'unified',
     counselor: '',
     summary: '',
@@ -92,7 +91,6 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
     club_activities: '',
     volunteer_activities: '',
     awards: '',
-    portfolio_status: '준비 중',
     // 종합 의견 필드
     final_recommendation: '',
     summary_vi: ''
@@ -200,15 +198,14 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
         club_activities: formData.club_activities || '',
         volunteer_activities: formData.volunteer_activities || '',
         awards: formData.awards || '',
-        portfolio_status: formData.portfolio_status || '준비 중',
-        // 종합 의견
+        // 종합 의곬
         final_recommendation: formData.final_recommendation || ''
       };
 
       const dataToSend = {
         student_id: formData.student_id,
         consultation_date: formData.consultation_date,
-        consultation_type: formData.consultation_type || '정기 상담',
+        consultation_type: '정기 상담',
         evaluation_category: 'unified',
         counselor: formData.counselor || '',
         summary: formData.summary || '',
@@ -292,23 +289,6 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
               required
               fullWidth
             />
-
-            <FormControl fullWidth>
-              <InputLabel>상담 유형</InputLabel>
-              <Select
-                value={formData.consultation_type}
-                label="상담 유형"
-                onChange={(e) => setFormData({ ...formData, consultation_type: e.target.value })}
-                required
-              >
-                <MenuItem value="정기 상담">정기 상담</MenuItem>
-                <MenuItem value="특별 상담">특별 상담</MenuItem>
-                <MenuItem value="입학 상담">입학 상담</MenuItem>
-                <MenuItem value="진로 상담">진로 상담</MenuItem>
-                <MenuItem value="학업 상담">학업 상담</MenuItem>
-                <MenuItem value="생활 상담">생활 상담</MenuItem>
-              </Select>
-            </FormControl>
 
             <TextField
               label="상담사"
@@ -457,52 +437,6 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
               onChange={(e) => setFormData({ ...formData, growth_potential: e.target.value })}
               fullWidth
             />
-
-            <Divider sx={{ my: 2 }} />
-            
-            <Typography variant="subtitle1" gutterBottom>
-              포트폴리오
-            </Typography>
-
-            <TextField
-              label="동아리 활동"
-              multiline
-              rows={2}
-              value={formData.club_activities}
-              onChange={(e) => setFormData({ ...formData, club_activities: e.target.value })}
-              fullWidth
-            />
-
-            <TextField
-              label="봉사 활동"
-              multiline
-              rows={2}
-              value={formData.volunteer_activities}
-              onChange={(e) => setFormData({ ...formData, volunteer_activities: e.target.value })}
-              fullWidth
-            />
-
-            <TextField
-              label="수상 경력"
-              multiline
-              rows={2}
-              value={formData.awards}
-              onChange={(e) => setFormData({ ...formData, awards: e.target.value })}
-              fullWidth
-            />
-
-            <FormControl fullWidth>
-              <InputLabel>포트폴리오 상태</InputLabel>
-              <Select
-                value={formData.portfolio_status}
-                label="포트폴리오 상태"
-                onChange={(e) => setFormData({ ...formData, portfolio_status: e.target.value })}
-              >
-                <MenuItem value="준비 중">준비 중</MenuItem>
-                <MenuItem value="진행 중">진행 중</MenuItem>
-                <MenuItem value="완료">완료</MenuItem>
-              </Select>
-            </FormControl>
           </Box>
         </TabPanel>
 

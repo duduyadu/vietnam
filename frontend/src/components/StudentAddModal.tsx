@@ -16,8 +16,11 @@ import {
   Typography,
   Divider,
   Stack,
-  CircularProgress
+  CircularProgress,
+  Avatar,
+  IconButton
 } from '@mui/material';
+import { PhotoCamera } from '@mui/icons-material';
 
 interface StudentAddModalProps {
   open: boolean;
@@ -30,6 +33,8 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
   const [agencies, setAgencies] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
   
   useEffect(() => {
     // 유학원 목록 가져오기 (캐싱 서비스 사용)
@@ -70,7 +75,8 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
     visa_expiry: '',
     alien_registration: '',
     agency_id: '',
-    agency_enrollment_date: ''
+    agency_enrollment_date: '',
+    profile_image: null as File | null
   });
 
   const handleChange = (field: string) => (event: any) => {
@@ -166,12 +172,26 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
     }
 
     try {
-      await onSubmit({
-        ...formData,
-        name_ko: formData.name, // 백엔드가 기대하는 필드명
-        name_vi: formData.name, // 베트남어 이름 (같은 이름 사용)
-        // student_code는 백엔드에서 자동 생성됨
+      // FormData 객체 생성
+      const submitData = new FormData();
+
+      // 모든 텍스트 필드 추가
+      Object.keys(formData).forEach(key => {
+        if (key !== 'profile_image' && formData[key as keyof typeof formData]) {
+          submitData.append(key, formData[key as keyof typeof formData] as string);
+        }
       });
+
+      // 추가 필드 설정
+      submitData.append('name_ko', formData.name);
+      submitData.append('name_vi', formData.name);
+
+      // 이미지 파일 추가
+      if (profileImage) {
+        submitData.append('profile_image', profileImage);
+      }
+
+      await onSubmit(submitData);
       
       // 폼 초기화
       setFormData({
@@ -193,7 +213,8 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
         visa_expiry: '',
         alien_registration: '',
         agency_id: '',
-        agency_enrollment_date: ''
+        agency_enrollment_date: '',
+        profile_image: null
       });
       
       onClose();
@@ -226,8 +247,33 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
       visa_expiry: '',
       alien_registration: '',
       agency_id: '',
-      agency_enrollment_date: ''
+      agency_enrollment_date: '',
+      profile_image: null
     });
+    setProfileImage(null);
+    setImagePreview('');
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('파일 크기는 5MB 이하로 제한됩니다.');
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        alert('이미지 파일만 업로드 가능합니다.');
+        return;
+      }
+
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -235,6 +281,31 @@ const StudentAddModal: React.FC<StudentAddModalProps> = ({ open, onClose, onSubm
       <DialogTitle>학생 추가</DialogTitle>
       <DialogContent>
         <Box sx={{ mt: 2 }}>
+          {/* 학생 사진 */}
+          <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+            <Avatar
+              src={imagePreview}
+              sx={{ width: 100, height: 100, mr: 2 }}
+            />
+            <Box>
+              <input
+                accept="image/*"
+                style={{ display: 'none' }}
+                id="photo-upload"
+                type="file"
+                onChange={handleImageChange}
+              />
+              <label htmlFor="photo-upload">
+                <IconButton color="primary" aria-label="upload picture" component="span">
+                  <PhotoCamera />
+                </IconButton>
+              </label>
+              <Typography variant="caption" display="block">
+                학생 사진 업로드 (5MB 이하)
+              </Typography>
+            </Box>
+          </Box>
+
           {/* 기본 정보 */}
           <Typography variant="h6" gutterBottom color="primary">
             기본 정보

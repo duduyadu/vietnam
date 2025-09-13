@@ -61,22 +61,29 @@ export const authAPI = {
 
 // Students API
 export const studentsAPI = {
-  getAll: (params?: any) => 
+  getAll: (params?: any) =>
     api.get('/students', { params }),
-  
-  getById: (id: number) => 
+
+  getById: (id: number) =>
     api.get(`/students/${id}`),
-  
+
   getByCode: (studentCode: string) =>
     api.get(`/students/by-code/${studentCode}`),
-  
-  create: (data: any) => 
+
+  create: (data: any) =>
     api.post('/students', data),
-  
-  update: (id: number, data: any) => 
+
+  createWithFile: (formData: FormData) =>
+    api.post('/students', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }),
+
+  update: (id: number, data: any) =>
     api.put(`/students/${id}`, data),
-  
-  delete: (id: number, config?: any) => 
+
+  delete: (id: number, config?: any) =>
     api.delete(`/students/${id}`, config)
 };
 

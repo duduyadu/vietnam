@@ -391,22 +391,20 @@ const Consultations: React.FC = () => {
                 <TableCell>상담 날짜</TableCell>
                 <TableCell>학생명</TableCell>
                 <TableCell>학생 코드</TableCell>
-                <TableCell>상담 유형</TableCell>
                 <TableCell>담당 교사</TableCell>
-                <TableCell>다음 상담</TableCell>
                 <TableCell align="center">작업</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">
+                  <TableCell colSpan={6} align="center">
                     로딩 중...
                   </TableCell>
                 </TableRow>
               ) : consultations.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">
+                  <TableCell colSpan={6} align="center">
                     상담 기록이 없습니다. 상담을 추가해주세요.
                   </TableCell>
                 </TableRow>
@@ -424,19 +422,7 @@ const Consultations: React.FC = () => {
                       {consultation.student_name_ko || consultation.student_name_vi || '-'}
                     </TableCell>
                     <TableCell>{consultation.student_code || '-'}</TableCell>
-                    <TableCell>
-                      <Chip
-                        label={getConsultationTypeLabel(consultation.consultation_type)}
-                        color={getConsultationTypeColor(consultation.consultation_type)}
-                        size="small"
-                      />
-                    </TableCell>
                     <TableCell>{consultation.teacher_name || '-'}</TableCell>
-                    <TableCell>
-                      {consultation.next_consultation_date ? 
-                        formatDate(consultation.next_consultation_date) : 
-                        '-'}
-                    </TableCell>
                     <TableCell align="center">
                       <IconButton
                         size="small"

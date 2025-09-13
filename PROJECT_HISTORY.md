@@ -593,6 +593,27 @@ UPDATE users SET username = SPLIT_PART(email, '@', 1) WHERE username IS NULL;
     - Supabase PostgreSQL 연결 성공
   - ✅ PROJECT_HISTORY.md 업데이트 및 GitHub 푸쉬 완료
 
+- 2025-09-13: 주요 UI/UX 개선 및 기능 수정
+  - ✅ **학생 등록 시 사진 업로드 기능 추가**
+    - StudentAddModal.tsx에 프로필 이미지 업로드 기능 구현
+    - 5MB 파일 크기 제한 및 이미지 타입 검증
+    - FormData를 사용한 multipart/form-data 전송
+    - api.ts에 createWithFile 메소드 추가
+  - ✅ **상담 UI 간소화**
+    - Consultations.tsx: 상담유형, 다음상담 컬럼 제거 (8열 → 6열)
+    - ConsultationModal.tsx: 상담유형 필드 제거, 기본값 '정기 상담'으로 고정
+    - ConsultationModal.tsx: 포트폴리오 관련 필드 제거 (portfolio_status)
+  - ✅ **PDF 보고서 최적화**
+    - consultation-report.html: 특별활동 섹션 완전 제거
+    - consultation-report-v3.html: 특별활동 및 포트폴리오 섹션 제거
+    - 페이지 제목 변경: "학업성취도 및 특별활동" → "학업성취도"
+  - ✅ **학생 목록 갱신 버그 수정**
+    - Students.tsx: loadStudents() 호출 시 await 추가로 동기화 문제 해결
+    - 학생 추가 후 즉시 목록에 반영되도록 수정
+  - ✅ **TypeScript 컴파일 오류 수정**
+    - ConsultationModal.tsx: 누락된 쉼표 추가 (lines 73, 95)
+    - StudentAddModal.tsx: 폼 초기화 시 profile_image 필드 추가
+
 ---
 
 **참고**: 이 문서는 CLAUDE.md의 설계 사양과 실제 구현 내용을 통합하여 작성되었습니다.
