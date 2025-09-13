@@ -2,6 +2,44 @@ const express = require('express');
 const router = express.Router();
 const { verifyToken } = require('../middleware/auth');
 const db = require('../config/database');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Ensure upload directory exists
+const uploadDir = path.join(__dirname, '..', 'uploads', 'students');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configure multer for profile image uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'profile-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = /jpeg|jpg|png|gif/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 console.log('🚀 Students router OPTIMIZED - With automatic ID generation');
 
@@ -85,11 +123,29 @@ router.get('/', async (req, res) => {
 // ============================
 // 학생 생성 (자동 ID 생성)
 // ============================
-router.post('/', async (req, res) => {
+router.post('/', upload.single('profile_image'), async (req, res) => {
+  console.log('\n===========================================');
+  console.log('🔥 STUDENT CREATE REQUEST RECEIVED');
+  console.log('===========================================');
+  console.log('📍 Headers:', req.headers['content-type']);
+  console.log('📍 Has file?:', !!req.file);
+  console.log('📍 Body exists?:', !!req.body);
+  console.log('📍 Body content:', req.body);
+  console.log('===========================================\n');
+
   try {
-    const { 
-      name_ko, 
-      name_vi, 
+    // req.body가 없으면 에러 반환
+    if (!req.body) {
+      console.error('❌ ERROR: req.body is undefined!');
+      return res.status(400).json({
+        error: 'Request body is missing',
+        message: 'multipart/form-data parsing failed'
+      });
+    }
+
+    const {
+      name_ko,
+      name_vi,
       agency_id,
       phone,
       email,
@@ -115,6 +171,7 @@ router.post('/', async (req, res) => {
       agency_id,
       hasName: !!name_ko,
       hasAgency: !!agency_id,
+      hasFile: !!req.file,
       fullBody: req.body
     });
     
@@ -202,6 +259,7 @@ router.post('/', async (req, res) => {
       visa_expiry: formatDate(visa_expiry),
       alien_registration,
       agency_enrollment_date,
+      profile_image: req.file ? `/uploads/students/${req.file.filename}` : null,
       created_by: req.user.user_id
     };
     
@@ -444,8 +502,6 @@ router.get('/:id', async (req, res) => {
 // ============================
 // 학생 사진 업로드
 // ============================
-const multer = require('multer');
-const path = require('path');
 
 // 사진 업로드 설정
 const photoStorage = multer.diskStorage({

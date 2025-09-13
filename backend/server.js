@@ -8,6 +8,17 @@ const performanceMonitor = require('./utils/performance');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
+// CRITICAL: Very first middleware to catch ALL requests
+console.log('🔥🔥🔥 DEBUG MIDDLEWARE LOADED AT', new Date().toISOString());
+app.use((req, res, next) => {
+  console.log('\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨');
+  console.log(`🔴 INCOMING REQUEST: ${req.method} ${req.originalUrl}`);
+  console.log(`🔴 Content-Type: ${req.headers['content-type']}`);
+  console.log(`🔴 Time: ${new Date().toISOString()}`);
+  console.log('🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n');
+  next();
+});
+
 // Middleware
 app.use(helmet());
 app.use(cors());
@@ -20,9 +31,14 @@ app.use(morgan('dev'));
 // 성능 모니터링 미들웨어
 app.use(performanceMonitor.measureResponseTime());
 
-// 추가 디버깅용 로그
+// 추가 디버깅용 로그 (Body 파싱 후)
 app.use((req, res, next) => {
-  console.log(`[REQUEST] ${req.method} ${req.originalUrl} - Body:`, req.body);
+  console.log(`[PARSED REQUEST] ${req.method} ${req.originalUrl}`);
+  console.log(`[BODY EXISTS?] ${!!req.body}`);
+  if (req.originalUrl.includes('/students')) {
+    console.log('📌 STUDENT ROUTE DETECTED!');
+    console.log('📌 Body content:', req.body);
+  }
   next();
 });
 

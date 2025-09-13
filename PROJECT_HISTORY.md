@@ -660,3 +660,161 @@ UPDATE users SET username = SPLIT_PART(email, '@', 1) WHERE username IS NULL;
   - 시각적 계층 구조 개선 (섹션 헤더, 아이콘, 간격)
   - 그림자 효과 및 호버 애니메이션 추가
   - 전문적인 타이포그래피 및 레이아웃 최적화
+
+### 학생 추가 500 에러 디버깅 및 해결
+- **문제 상황**
+  - 학생 추가 시 500 Internal Server Error 발생
+  - 에러 메시지: "Cannot destructure property 'name_ko' of 'req.body' as it is undefined"
+  - 프론트엔드는 FormData로 multipart/form-data 전송
+  - 백엔드에서 req.body가 undefined로 처리됨
+
+- **디버깅 과정**
+  1. **요청 경로 추적**
+     - Frontend: StudentAddModal.tsx → FormData 생성 → studentsAPI.createWithFile()
+     - API: POST http://localhost:5000/api/students (multipart/form-data)
+     - Backend: students-optimized.js → multer 미들웨어 → POST 핸들러
+
+  2. **문제 원인 분석**
+     - multer 미들웨어 추가 (upload.single('profile_image'))
+     - 디버깅 로그 추가 (server.js, students-optimized.js)
+     - 포트 설정 확인 (Frontend: 3002, Backend: 5000)
+     - .env 파일 PORT 설정 수정 (3001 → 3002)
+
+  3. **해결 방법**
+     - multer 중복 선언 제거 (students-optimized.js:487)
+     - 디버깅 로그 강화 (요청 헤더, body 상태 확인)
+     - 에러 핸들링 개선 (req.body 검증 로직 추가)
+
+- **주요 코드 변경사항**
+  ```javascript
+  // students-optimized.js
+  router.post('/', upload.single('profile_image'), async (req, res) => {
+    console.log('🔥 STUDENT CREATE REQUEST RECEIVED');
+    console.log('📍 Headers:', req.headers['content-type']);
+    console.log('📍 Has file?:', !!req.file);
+    console.log('📍 Body exists?:', !!req.body);
+
+    if (!req.body) {
+      console.error('❌ ERROR: req.body is undefined!');
+      return res.status(400).json({
+        error: 'Request body is missing',
+        message: 'multipart/form-data parsing failed'
+      });
+    }
+    // ... 나머지 로직
+  });
+  ```
+
+- **교훈 및 개선사항**
+  - 서버 재시작 시 변경사항 반영 확인 필수
+  - multer 미들웨어는 라우트 레벨에서 적용
+  - 디버깅 로그는 최대한 상세하게 작성
+
+### 2025-09-13 (Part 2) - 종합적 디버깅 및 근본 원인 분석
+
+#### 🔍 Ultrathink 방법론을 통한 완전한 코드 경로 추적
+
+- **문제 상황**
+  - 백엔드 서버에서 요청 로그가 전혀 나타나지 않음
+  - 여러 백엔드 프로세스가 동시에 실행 중이었음
+  - 코드 변경사항이 반영되지 않은 상태
+
+- **종합적 코드 경로 분석**
+  1. **Frontend 경로 추적**
+     - StudentAddModal.tsx → FormData 생성 및 onSubmit 호출
+     - Students.tsx:handleAddStudent → studentsAPI.createWithFile() 호출
+     - api.ts:createWithFile → POST /students (multipart/form-data)
+
+  2. **Backend 경로 추적**
+     - server.js → 요청 로깅 미들웨어 (line 24-28)
+     - server.js:54 → app.use('/api/students', studentsRoutes)
+     - students-optimized.js:126 → router.post('/', upload.single('profile_image'))
+
+  3. **잠재적 충돌 지점 검증**
+     - student-image-upload.js 확인 → '/upload-image' 라우트만 처리 (충돌 없음)
+     - 라우트 순서 확인 → 정상적인 설정
+
+- **근본 원인 발견**
+  - **핵심 문제**: 백엔드 서버가 multer 미들웨어 추가 전 버전으로 실행 중
+  - **증거**: 여러 백엔드 프로세스(0c79bf, b214f1, 0b84eb, cc96ec)가 동시 실행
+  - **해결**: 모든 기존 프로세스 종료 후 새로운 서버 시작 필요
+
+- **강화된 디버깅 로그 추가**
+  ```javascript
+  // server.js - 최상위 미들웨어로 모든 요청 캐치
+  app.use((req, res, next) => {
+    console.log('🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨');
+    console.log(`🔴 INCOMING REQUEST: ${req.method} ${req.originalUrl}`);
+    console.log(`🔴 Content-Type: ${req.headers['content-type']}`);
+    console.log(`🔴 Time: ${new Date().toISOString()}`);
+    console.log('🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨');
+    next();
+  });
+
+  // Body 파싱 후 추가 로깅
+  app.use((req, res, next) => {
+    console.log(`[PARSED REQUEST] ${req.method} ${req.originalUrl}`);
+    console.log(`[BODY EXISTS?] ${!!req.body}`);
+    if (req.originalUrl.includes('/students')) {
+      console.log('📌 STUDENT ROUTE DETECTED!');
+      console.log('📌 Body content:', req.body);
+    }
+    next();
+  });
+  ```
+
+- **프로세스 관리 및 서버 재시작**
+  - 기존 프로세스 종료: KillShell cc96ec (성공)
+  - 새 서버 시작: bash_id aaf110으로 재시작
+  - 서버 상태 확인: 정상 실행 확인 (port 5000)
+
+- **최종 교훈**
+  1. **서버 재시작의 중요성**: 코드 변경 후 반드시 서버 재시작 확인
+  2. **프로세스 관리**: 다중 프로세스 실행 시 충돌 가능성 인지
+  3. **단계적 디버깅**: 요청 경로의 모든 지점에 로그 추가
+  4. **미들웨어 순서**: Express 미들웨어 실행 순서 이해 필수
+  5. **근본 원인 추적**: 표면적 증상이 아닌 실제 원인 파악 중요
+  - 프론트엔드와 백엔드 포트 설정 일치 확인
+
+### 2025-09-13 (Part 3) - 백엔드 서버 재시작 및 디버깅
+
+#### 🔧 서버 프로세스 관리 문제 해결
+
+- **문제 현상**
+  - 백엔드 서버가 이전 버전 코드로 실행됨
+  - 디버깅 로그(🚨 INCOMING REQUEST)가 출력되지 않음
+  - 여러 node.exe 프로세스가 동시에 실행 중
+
+- **해결 과정**
+  1. **다중 프로세스 확인**
+     - PID 11480이 포트 5000 점유 확인
+     - 총 9개의 node.exe 프로세스 발견
+
+  2. **프로세스 종료 및 재시작**
+     - 모든 기존 프로세스 종료
+     - 직접 node 명령어로 서버 재시작: `node server.js`
+     - 디버깅 로그 추가: "🔥🔥🔥 DEBUG MIDDLEWARE LOADED"
+
+  3. **서버 상태 확인**
+     - 서버 정상 실행 확인 (포트 5000)
+     - Health check 엔드포인트 응답 확인
+     - API 엔드포인트 정상 응답 확인 (토큰 인증 필요)
+
+- **주요 코드 변경사항**
+  ```javascript
+  // server.js - 디버깅 강화
+  console.log('🔥🔥🔥 DEBUG MIDDLEWARE LOADED AT', new Date().toISOString());
+  app.use((req, res, next) => {
+    console.log('\n🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨');
+    console.log(`🔴 INCOMING REQUEST: ${req.method} ${req.originalUrl}`);
+    console.log(`🔴 Content-Type: ${req.headers['content-type']}`);
+    console.log(`🔴 Time: ${new Date().toISOString()}`);
+    console.log('🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n');
+    next();
+  });
+  ```
+
+- **교훈**
+  - npm start 대신 직접 node 명령어 사용시 더 명확한 제어 가능
+  - 프로세스 관리 도구(taskkill, netstat) 활용 중요
+  - 코드 변경 후 반드시 서버 재시작 확인 필수
