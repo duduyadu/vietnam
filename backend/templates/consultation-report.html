@@ -148,15 +148,32 @@
             }
         }
         
-        /* 표지 페이지 - 균등 여백 */
+        /* 표지 페이지 - 균등 여백 - 모던 미니멀리즘 디자인 */
         .page-cover {
             width: 210mm;
             height: 297mm;
             padding: 15mm;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
             position: relative;
             page-break-after: always;
             box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        .page-cover::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-30px, -30px) rotate(180deg); }
         }
         
         .cover-content {
@@ -400,26 +417,38 @@
         .section-heading {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 16px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #dee2e6;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            position: relative;
+        }
+
+        .section-heading::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, #4F46E5 0%, #7C3AED 100%);
         }
         
         .section-icon {
-            width: 30px;
-            height: 30px;
-            background: #667eea !important;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%) !important;
             -webkit-print-color-adjust: exact;
             color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 16px;
+            font-size: 18px;
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
         }
         
         /* Table */
@@ -430,7 +459,7 @@
         }
         
         .data-table thead {
-            background: #f8f9fa !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
             -webkit-print-color-adjust: exact;
         }
         
@@ -470,11 +499,19 @@
         }
         
         .stat-card {
-            background: #f8f9fa !important;
+            background: #ffffff !important;
             -webkit-print-color-adjust: exact;
-            border-radius: 10px;
-            padding: 15px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px 15px;
             text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transform: translateY(-2px);
         }
         
         .stat-icon {
@@ -515,15 +552,17 @@
         }
         
         .analysis-box.positive {
-            border-color: #4caf50;
-            background: #f1f8e9 !important;
+            border-color: #10b981;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
             -webkit-print-color-adjust: exact;
+            box-shadow: 0 1px 3px 0 rgba(16, 185, 129, 0.1);
         }
-        
+
         .analysis-box.negative {
-            border-color: #ff9800;
-            background: #fff3e0 !important;
+            border-color: #f59e0b;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
             -webkit-print-color-adjust: exact;
+            box-shadow: 0 1px 3px 0 rgba(245, 158, 11, 0.1);
         }
         
         .analysis-title {
@@ -646,12 +685,24 @@
         
         /* Opinion Box */
         .opinion-box {
-            background: #e3f2fd !important;
+            background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 100%) !important;
             -webkit-print-color-adjust: exact;
-            border-left: 4px solid #1976d2;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+            border-left: 4px solid #4F46E5;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .opinion-box::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            font-size: 48px;
+            color: rgba(79, 70, 229, 0.15);
+            font-weight: 700;
         }
         
         .opinion-text {
@@ -670,10 +721,18 @@
         }
         
         .eval-item {
-            padding: 15px;
-            border-radius: 8px;
-            background: #f8f9fa !important;
+            padding: 18px;
+            border-radius: 12px;
+            background: #ffffff !important;
             -webkit-print-color-adjust: exact;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .eval-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
         
         .eval-header {
@@ -702,13 +761,26 @@
         
         /* Final Recommendation */
         .recommendation-box {
-            background: #4caf50 !important;
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%) !important;
             -webkit-print-color-adjust: exact;
             color: white;
-            padding: 20px;
-            border-radius: 10px;
+            padding: 28px;
+            border-radius: 16px;
             text-align: center;
-            margin: 20px 0;
+            margin: 30px 0;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recommendation-box::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         }
         
         .recommendation-text {
@@ -767,12 +839,14 @@
         }
         /* Adjust timeline for better visibility */
         .timeline-box {
-            background: #f8f9fa !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%) !important;
             -webkit-print-color-adjust: exact;
-            border-radius: 6px;
-            padding: 15px 15px;
-            margin-bottom: 15px;
-            min-height: 80px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 90px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
         }
         
         .timeline-item {
@@ -933,13 +1007,24 @@
                 <div class="section-icon">🎯</div>
                 <span>희망대학 및 전공</span>
             </div>
-            
+
             <div class="timeline-box">
                 {{university_goals_timeline}}
             </div>
         </div>
-        
-        
+
+        <!-- Consultation History Section (Restored) -->
+        <div class="section">
+            <div class="section-heading">
+                <div class="section-icon">💬</div>
+                <span>주요 상담 이력</span>
+            </div>
+
+            <div class="timeline-box">
+                {{consultation_timeline}}
+            </div>
+        </div>
+
     </div>
     
     <!-- Page 4: Comprehensive Evaluation -->

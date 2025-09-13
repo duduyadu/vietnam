@@ -202,8 +202,12 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
         club_activities: formData.club_activities || '',
         volunteer_activities: formData.volunteer_activities || '',
         awards: formData.awards || '',
-        // 종합 의곬
-        final_recommendation: formData.final_recommendation || ''
+        // 종합 의견
+        counselor_comprehensive_opinion: formData.counselor_comprehensive_opinion || '',
+        // 담당 상담사 이름
+        counselor_name: formData.counselor_name || '',
+        // 희망 대학 및 전공
+        university_preferences: formData.university_preferences || []
       };
 
       const dataToSend = {

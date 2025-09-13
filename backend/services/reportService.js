@@ -464,31 +464,46 @@ class EnhancedReportService {
       
       // 상담 기록에서 대학 변경 정보 추출
       consultations.forEach(c => {
-        const content = (c.content_ko || c.notes || '').toLowerCase();
-        let university = null;
-        let major = null;
-        
-        // 대학명 추출
-        if (content.includes('서울대')) university = '서울대학교';
-        else if (content.includes('연세대')) university = '연세대학교';
-        else if (content.includes('고려대')) university = '고려대학교';
-        else if (content.includes('성균관대')) university = '성균관대학교';
-        else if (content.includes('한양대')) university = '한양대학교';
-        
-        // 전공 추출
-        if (content.includes('경영')) major = '경영학과';
-        else if (content.includes('컴퓨터') || content.includes('공학')) major = '컴퓨터공학과';
-        else if (content.includes('글로벌')) major = '글로벌경영학과';
-        else if (content.includes('경제')) major = '경제학과';
-        else if (content.includes('국제')) major = '국제학부';
-        
-        if (university || major) {
-          universityChanges.push({
-            date: c.consultation_date,
-            university: university,
-            major: major,
-            notes: c.action_items || ''
+        // action_items에서 university_preferences 확인 (신규 형식)
+        if (c.university_preferences && Array.isArray(c.university_preferences)) {
+          c.university_preferences.forEach(pref => {
+            if (pref.university || pref.major) {
+              universityChanges.push({
+                date: pref.date || c.consultation_date,
+                university: pref.university || '미정',
+                major: pref.major || '미정',
+                notes: '희망 변경'
+              });
+            }
           });
+        } else {
+          // 기존 방식 - content에서 추출 (호환성 유지)
+          const content = (c.content_ko || c.notes || '').toLowerCase();
+          let university = null;
+          let major = null;
+
+          // 대학명 추출
+          if (content.includes('서울대')) university = '서울대학교';
+          else if (content.includes('연세대')) university = '연세대학교';
+          else if (content.includes('고려대')) university = '고려대학교';
+          else if (content.includes('성균관대')) university = '성균관대학교';
+          else if (content.includes('한양대')) university = '한양대학교';
+
+          // 전공 추출
+          if (content.includes('경영')) major = '경영학과';
+          else if (content.includes('컴퓨터') || content.includes('공학')) major = '컴퓨터공학과';
+          else if (content.includes('글로벌')) major = '글로벌경영학과';
+          else if (content.includes('경제')) major = '경제학과';
+          else if (content.includes('국제')) major = '국제학부';
+
+          if (university || major) {
+            universityChanges.push({
+              date: c.consultation_date,
+              university: university,
+              major: major,
+              notes: c.action_items || ''
+            });
+          }
         }
       });
       
@@ -787,7 +802,8 @@ class EnhancedReportService {
         '{{academic_evaluation}}': evaluationData?.academic_evaluation || '학업에 대한 열정이 높고 꾸준히 성장하고 있습니다. TOPIK 성적이 지속적으로 향상되고 있으며, 대학 진학에 필요한 기초 학력을 갖추고 있습니다.',
         '{{korean_evaluation}}': evaluationData?.korean_evaluation || 'TOPIK 성적이 꾸준히 향상되고 있으며, 대학 수업을 따라갈 수 있는 수준입니다. 읽기와 듣기 영역에서 특히 우수한 성과를 보이고 있습니다.',
         '{{final_recommendation}}': evaluationData?.final_recommendation || '목표 대학 진학에 적합한 학생으로 추천합니다.',
-        '{{counselor_name}}': consultations?.[0]?.counselor_name || consultations?.[0]?.created_by_name || '담당 상담사',
+        '{{counselor_comprehensive_opinion}}': evaluationData?.counselor_comprehensive_opinion || evaluationData?.final_recommendation || '목표 대학 진학에 적합한 학생으로 추천합니다.',
+        '{{counselor_name}}': evaluationData?.counselor_name || consultations?.[0]?.counselor_name || consultations?.[0]?.created_by_name || '담당 상담사',
         '{{teacher_evaluation_summary}}': teacherEvalSummary, // 선생님 평가 종합 추가
         '{{counselor_evaluation_summary}}': counselorEvalSummary // 상담사 종합 평가 추가
       };
