@@ -19,7 +19,8 @@ import {
   Divider,
   Chip,
   Slider,
-  Paper
+  Paper,
+  IconButton
 } from '@mui/material';
 import { consultationsAPI, studentsAPI } from '../services/api';
 import { extractErrorMessage } from '../utils/errorHandler';
@@ -65,6 +66,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
     consultation_date: new Date().toISOString().split('T')[0],
     evaluation_category: 'unified',
     counselor: '',
+    counselor_name: '',  // 담당 상담사 이름
     summary: '',
     improvements: '',
     next_goals: '',
@@ -91,8 +93,10 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
     club_activities: '',
     volunteer_activities: '',
     awards: '',
+    // 희망 대학 및 전공 (누적 기록)
+    university_preferences: [],  // [{date: '2025-01-01', university: '서울대학교', major: '기계공학과'}]
     // 종합 의견 필드
-    final_recommendation: '',
+    counselor_comprehensive_opinion: '',  // 상담사 종합 의견 (구 최종 추천사항)
     summary_vi: ''
   };
 
@@ -246,9 +250,9 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
           <Tab label="학업 평가" />
           <Tab label="한국어 평가" />
           <Tab label="생활 및 활동" />
+          <Tab label="희망 대학 및 전공" />
           <Tab label="평가 및 목표" />
           <Tab label="TOPIK 모의고사" />
-          <Tab label="비자 준비" />
           <Tab label="종합 의견" />
         </Tabs>
 
@@ -291,11 +295,20 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
             />
 
             <TextField
-              label="상담사"
+              label="상담사 ID"
               value={formData.counselor}
               onChange={(e) => setFormData({ ...formData, counselor: e.target.value })}
               fullWidth
               required
+            />
+
+            <TextField
+              label="담당 상담사 이름"
+              value={formData.counselor_name}
+              onChange={(e) => setFormData({ ...formData, counselor_name: e.target.value })}
+              fullWidth
+              sx={{ mb: 1 }}
+              helperText="PDF 보고서에 표시될 상담사 이름"
             />
 
             <TextField
@@ -440,8 +453,86 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
           </Box>
         </TabPanel>
 
-        {/* 평가 및 목표 탭 */}
+        {/* 희망 대학 및 전공 탭 */}
         <TabPanel value={tabValue} index={4}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>희망 대학 및 전공 추가</Typography>
+            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
+              <TextField
+                label="날짜"
+                type="date"
+                value={formData.new_preference_date || ''}
+                onChange={(e) => setFormData({ ...formData, new_preference_date: e.target.value })}
+                sx={{ width: '25%' }}
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                label="희망 대학"
+                value={formData.new_preference_university || ''}
+                onChange={(e) => setFormData({ ...formData, new_preference_university: e.target.value })}
+                sx={{ width: '35%' }}
+              />
+              <TextField
+                label="희망 전공"
+                value={formData.new_preference_major || ''}
+                onChange={(e) => setFormData({ ...formData, new_preference_major: e.target.value })}
+                sx={{ width: '35%' }}
+              />
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (formData.new_preference_date && formData.new_preference_university && formData.new_preference_major) {
+                    const newPreference = {
+                      date: formData.new_preference_date,
+                      university: formData.new_preference_university,
+                      major: formData.new_preference_major
+                    };
+                    setFormData({
+                      ...formData,
+                      university_preferences: [...(formData.university_preferences || []), newPreference],
+                      new_preference_date: '',
+                      new_preference_university: '',
+                      new_preference_major: ''
+                    });
+                  }
+                }}
+                sx={{ width: '10%', minWidth: '80px' }}
+              >
+                추가
+              </Button>
+            </Box>
+
+            <Typography variant="subtitle1" sx={{ mb: 1 }}>희망 대학 및 전공 이력</Typography>
+            {formData.university_preferences && formData.university_preferences.length > 0 ? (
+              <Box sx={{ mb: 2 }}>
+                {formData.university_preferences.map((pref: any, index: number) => (
+                  <Box key={index} sx={{ mb: 1, p: 1, bgcolor: 'grey.100', borderRadius: 1 }}>
+                    <Typography variant="body2">
+                      {pref.date} - {pref.university} {pref.major}
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          const newPreferences = formData.university_preferences.filter((_: any, i: number) => i !== index);
+                          setFormData({ ...formData, university_preferences: newPreferences });
+                        }}
+                        sx={{ ml: 1 }}
+                      >
+                        ❌
+                      </IconButton>
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                아직 추가된 희망 대학 및 전공이 없습니다.
+              </Typography>
+            )}
+          </Box>
+        </TabPanel>
+
+        {/* 평가 및 목표 탭 */}
+        <TabPanel value={tabValue} index={5}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="subtitle2" color="primary">
               아래 항목들은 PDF 보고서에 포함됩니다
@@ -491,7 +582,7 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
         </TabPanel>
 
         {/* TOPIK 모의고사 탭 */}
-        <TabPanel value={tabValue} index={5}>
+        <TabPanel value={tabValue} index={6}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant="h6" gutterBottom>
               TOPIK 모의고사 점수 입력
@@ -585,29 +676,6 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
           </Box>
         </TabPanel>
 
-        {/* 비자 준비 탭 */}
-        <TabPanel value={tabValue} index={6}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Alert severity="info">
-              이 상담 기록은 비자 신청 및 대학 입학 심사에 제출될 수 있습니다.
-            </Alert>
-
-            <Typography variant="h6">체크리스트</Typography>
-            
-            <Box sx={{ pl: 2 }}>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                ✓ TOPIK 모의고사 성적 분석 포함
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                ✓ 출석률 및 학습 태도 언급
-              </Typography>
-              <Typography variant="body2" sx={{ mb: 1 }}>
-                ✓ 한국 유학 준비도 평가
-              </Typography>
-            </Box>
-          </Box>
-        </TabPanel>
-
         {/* 종합 의견 탭 */}
         <TabPanel value={tabValue} index={7}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -626,13 +694,13 @@ const ConsultationModal: React.FC<ConsultationModalProps> = ({
             />
 
             <TextField
-              label="최종 추천사항"
+              label="상담사 종합 의견"
               multiline
               rows={4}
-              value={formData.final_recommendation}
-              onChange={(e) => setFormData({ ...formData, final_recommendation: e.target.value })}
+              value={formData.counselor_comprehensive_opinion}
+              onChange={(e) => setFormData({ ...formData, counselor_comprehensive_opinion: e.target.value })}
               fullWidth
-              helperText="학생과 학부모를 위한 최종 추천사항을 작성해주세요"
+              helperText="학생과 학부모를 위한 종합적인 의견을 작성해주세요"
             />
           </Box>
         </TabPanel>
